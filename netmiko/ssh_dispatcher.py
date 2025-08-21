@@ -72,6 +72,7 @@ from netmiko.dell import DellPowerConnectSSH
 from netmiko.dell import DellPowerConnectTelnet
 from netmiko.dell import DellIsilonSSH
 from netmiko.digi import DigiTransportSSH
+from netmiko.dinstar import DinstarMtcSSH, DinstarMtcTelnet
 from netmiko.dlink import DlinkDSTelnet, DlinkDSSSH
 from netmiko.edgecore import EdgecoreSonicSSH
 from netmiko.ekinops import EkinopsEk360SSH
@@ -244,6 +245,7 @@ CLASS_MAPPER_BASE = {
     "dell_isilon": DellIsilonSSH,
     "dlink_ds": DlinkDSSSH,
     "digi_transport": DigiTransportSSH,
+    "dinstar_mtc": DinstarMtcSSH,
     "edgecore_sonic": EdgecoreSonicSSH,
     "endace": EndaceSSH,
     "ekinops_ek360": EkinopsEk360SSH,
@@ -391,6 +393,7 @@ CLASS_MAPPER["cisco_s300_telnet"] = CiscoS300Telnet
 CLASS_MAPPER["dell_dnos6_telnet"] = DellDNOS6Telnet
 CLASS_MAPPER["dell_powerconnect_telnet"] = DellPowerConnectTelnet
 CLASS_MAPPER["dlink_ds_telnet"] = DlinkDSTelnet
+CLASS_MAPPER["dinstar_mtc_telnet"] = DinstarMtcTelnet
 CLASS_MAPPER["extreme_telnet"] = ExtremeExosTelnet
 CLASS_MAPPER["extreme_exos_telnet"] = ExtremeExosTelnet
 CLASS_MAPPER["extreme_netiron_telnet"] = ExtremeNetironTelnet

@@ -1723,7 +1723,7 @@ A paramiko SSHException occurred during connection creation:
         """
 
         # Time to delay in each read loop
-        loop_delay = 0.025
+        loop_delay = 0.005
 
         if self.read_timeout_override:
             read_timeout = self.read_timeout_override
