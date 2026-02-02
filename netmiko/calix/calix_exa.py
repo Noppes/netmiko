@@ -21,7 +21,7 @@ class CalixExaBase(CiscoSSHConnection, NoEnable, NoConfig):
 
     def special_login_handler(self, delay_factor: float = 1.0) -> None:
         """
-        Calix B6 presents with the following on login:
+        Calix presents with the following on login:
 
         login as:
         Password: ****
