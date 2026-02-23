@@ -52,6 +52,7 @@ from netmiko.cisco import (
     CiscoIosTelnet,
     CiscoIosSerial,
 )
+from netmiko.cisco import CiscoIseSSH, CiscoIseTelnet
 from netmiko.cisco import CiscoNxosSSH, CiscoNxosTelnet, CiscoNxosFileTransfer
 from netmiko.cisco import CiscoS200SSH, CiscoS200Telnet
 from netmiko.cisco import CiscoS300SSH, CiscoS300Telnet
@@ -231,6 +232,7 @@ CLASS_MAPPER_BASE = {
     "cisco_asa": CiscoAsaSSH,
     "cisco_ftd": CiscoFtdSSH,
     "cisco_ios": CiscoIosSSH,
+    "cisco_ise": CiscoIseSSH,
     "cisco_nxos": CiscoNxosSSH,
     "cisco_s200": CiscoS200SSH,
     "cisco_s300": CiscoS300SSH,
@@ -399,6 +401,7 @@ CLASS_MAPPER["calix_exa_telnet"] = CalixExaTelnet
 CLASS_MAPPER["centec_os_telnet"] = CentecOSTelnet
 CLASS_MAPPER["ciena_saos_telnet"] = CienaSaosTelnet
 CLASS_MAPPER["cisco_ios_telnet"] = CiscoIosTelnet
+CLASS_MAPPER["cisco_ise_telnet"] = CiscoIseTelnet
 CLASS_MAPPER["cisco_nxos_telnet"] = CiscoNxosTelnet
 CLASS_MAPPER["cisco_xr_telnet"] = CiscoXrTelnet
 CLASS_MAPPER["cisco_s200_telnet"] = CiscoS200Telnet
