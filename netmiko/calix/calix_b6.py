@@ -58,7 +58,7 @@ class CalixB6Base(CiscoSSHConnection):
                 if not new_data:
                     self.write_channel(self.RETURN)
         else:  # no-break
-            msg = """
+            msg = f"""
 Login process failed to Calix B6 device. Unable to login in {login_timeout} seconds.
 """
             raise NetmikoTimeoutException(msg)

@@ -1,7 +1,6 @@
 """Calix Axos SSH Driver for Netmiko"""
 
 from typing import Any, Optional
-import time
 
 from netmiko.cisco_base_connection import CiscoSSHConnection
 from netmiko.exceptions import NetmikoTimeoutException
@@ -17,42 +16,6 @@ class CalixAxosBase(CiscoSSHConnection):
         self.enable()
         self.set_terminal_width(command="terminal width 511", pattern="terminal")
         self.disable_paging()
-
-    def special_login_handler(self, delay_factor: float = 1.0) -> None:
-        """
-        Calix presents with the following on login:
-
-        login as:
-        Password: ****
-        """
-        new_data = ""
-        time.sleep(0.1)
-        start = time.time()
-        login_timeout = 20
-        while time.time() - start < login_timeout:
-            output = self.read_channel() if not new_data else new_data
-            new_data = ""
-            if output:
-                if "login as:" in output:
-                    assert isinstance(self.username, str)
-                    self.write_channel(self.username + self.RETURN)
-                elif "Password:" in output:
-                    assert isinstance(self.password, str)
-                    self.write_channel(self.password + self.RETURN)
-                    break
-                time.sleep(0.1)
-            else:
-                # No new data...sleep longer
-                time.sleep(0.5)
-                new_data = self.read_channel()
-                # If still no data, send an <enter>
-                if not new_data:
-                    self.write_channel(self.RETURN)
-        else:  # no-break
-            msg = """
-Login process failed to Calix B6 device. Unable to login in {login_timeout} seconds.
-"""
-            raise NetmikoTimeoutException(msg)
 
     def check_enable_mode(self, check_string: str = "#") -> bool:
         """Check if in enable mode. Return boolean."""
