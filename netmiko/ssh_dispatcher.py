@@ -239,6 +239,7 @@ CLASS_MAPPER_BASE = {
     "cisco_tp": CiscoTpTcCeSSH,
     "cisco_viptela": CiscoViptelaSSH,
     "cisco_wlc": CiscoWlcSSH,
+    "cisco_wlc_ios": CiscoIosSSH,
     "cisco_xe": CiscoIosSSH,
     "cisco_xr": CiscoXrSSH,
     "cloudgenix_ion": CloudGenixIonSSH,
