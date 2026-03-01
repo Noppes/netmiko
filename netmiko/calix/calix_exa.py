@@ -14,6 +14,7 @@ class CalixExaBase(BaseConnection, NoEnable, NoConfig):
         self.ansi_escape_codes = True
         self._test_channel_read(pattern=r">")
         self.set_base_prompt()
+        self.disable_paging(command="disable session pager")
 
     def set_base_prompt(
         self,

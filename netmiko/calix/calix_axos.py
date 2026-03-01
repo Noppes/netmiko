@@ -14,8 +14,8 @@ class CalixAxosBase(CiscoSSHConnection):
         self._test_channel_read(pattern=r"#")
         self.set_base_prompt()
         self.enable()
-        self.set_terminal_width(command="terminal width 511", pattern="terminal")
-        self.disable_paging()
+        self.set_terminal_width(command="terminal screen-width 512", pattern="terminal")
+        self.disable_paging(command="terminal screen-length 0")
 
     def check_enable_mode(self, check_string: str = "#") -> bool:
         """Check if in enable mode. Return boolean."""
