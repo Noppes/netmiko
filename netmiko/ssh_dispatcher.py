@@ -110,6 +110,7 @@ from netmiko.fortinet import FortinetSSH
 from netmiko.fujitsu import FujitsuSirSSH
 from netmiko.garderos import GarderosGrsSSH
 from netmiko.genexis import GenexisSOLT33Telnet
+from netmiko.harmonic import HarmonicCableOsSSH
 from netmiko.hillstone import HillstoneStoneosSSH
 from netmiko.hioso import HiosoOLTTelnet
 from netmiko.hirschmann import HirschmannHiOSSSH
@@ -302,6 +303,7 @@ CLASS_MAPPER_BASE = {
     "generic": GenericSSH,
     "generic_termserver": TerminalServerSSH,
     "h3c_comware": HPComwareSSH,
+    "harmonic_cableos": HarmonicCableOsSSH,
     "hillstone_stoneos": HillstoneStoneosSSH,
     "hirschmann_hios": HirschmannHiOSSSH,
     "hp_comware": HPComwareSSH,
