@@ -8,7 +8,6 @@ from netmiko.no_config import NoConfig
 
 
 class CalixExaBase(BaseConnection, NoEnable, NoConfig):
-
     def session_preparation(self) -> Any:
         """Prepare the session after the connection has been established."""
         self.ansi_escape_codes = True
@@ -19,7 +18,7 @@ class CalixExaBase(BaseConnection, NoEnable, NoConfig):
     def set_base_prompt(
         self,
         pri_prompt_terminator: str = ">",
-        alt_prompt_terminator: str = None,
+        alt_prompt_terminator: str = ">",
         delay_factor: float = 1.0,
         pattern: Optional[str] = None,
     ) -> str:
@@ -29,6 +28,7 @@ class CalixExaBase(BaseConnection, NoEnable, NoConfig):
             delay_factor=delay_factor,
             pattern=pattern,
         )
+
 
 class CalixExaSSH(CalixExaBase):
     pass
