@@ -71,7 +71,7 @@ from netmiko.dell import DellDNOS6SSH
 from netmiko.dell import DellDNOS6Telnet
 from netmiko.dell import DellForce10SSH
 from netmiko.dell import DellOS10SSH, DellOS10FileTransfer
-from netmiko.dell import DellSonicSSH
+from netmiko.dell import DellSonicSSH, DellSonicFileTransfer
 from netmiko.dell import DellPowerConnectSSH
 from netmiko.dell import DellPowerConnectTelnet
 from netmiko.dell import DellIsilonSSH
@@ -108,6 +108,11 @@ from netmiko.fiberstore import (
 from netmiko.flexvnf import FlexvnfSSH
 from netmiko.fortinet import FortinetSSH
 from netmiko.fujitsu import FujitsuSirSSH
+from netmiko.furukawa import (
+    FurukawaFitelnetSSH,
+    FurukawaFitelnetTelnet,
+    FurukawaFitelnetSerial,
+)
 from netmiko.garderos import GarderosGrsSSH
 from netmiko.genexis import GenexisSOLT33Telnet
 from netmiko.harmonic import HarmonicCableOsSSH
@@ -183,6 +188,7 @@ from netmiko.watchguard import WatchguardFirewareSSH
 from netmiko.westermo import WestermoOsSSH, WestermoOsTelnet
 from netmiko.yamaha import YamahaSSH
 from netmiko.yamaha import YamahaTelnet
+from netmiko.zpe import ZpeNodegridSSH, ZpeNodegridFileTransfer
 from netmiko.zte import ZteZxrosSSH
 from netmiko.zte import ZteZxrosTelnet
 from netmiko.zyxel import ZyxelSSH
@@ -250,6 +256,7 @@ CLASS_MAPPER_BASE = {
     "cisco_nxos": CiscoNxosSSH,
     "cisco_s200": CiscoS200SSH,
     "cisco_s300": CiscoS300SSH,
+    "cisco_s500": CiscoS300SSH,
     "cisco_tp": CiscoTpTcCeSSH,
     "cisco_viptela": CiscoViptelaSSH,
     "cisco_wlc": CiscoWlcSSH,
@@ -299,6 +306,7 @@ CLASS_MAPPER_BASE = {
     "fortinet": FortinetSSH,
     "fsas_sir": FujitsuSirSSH,
     "fujitsu_sir": FujitsuSirSSH,
+    "furukawa_fitelnet": FurukawaFitelnetSSH,
     "garderos_grs": GarderosGrsSSH,
     "generic": GenericSSH,
     "generic_termserver": TerminalServerSSH,
@@ -369,6 +377,7 @@ CLASS_MAPPER_BASE = {
     "vyatta_vyos": VyOSSSH,
     "vyos": VyOSSSH,
     "watchguard_fireware": WatchguardFirewareSSH,
+    "zpe_nodegrid": ZpeNodegridSSH,
     "westermo_os": WestermoOsSSH,
     "zte_zxros": ZteZxrosSSH,
     "yamaha": YamahaSSH,
@@ -387,12 +396,14 @@ FILE_TRANSFER_MAP = {
     "cisco_xe": CiscoIosFileTransfer,
     "cisco_xr": CiscoXrFileTransfer,
     "dell_os10": DellOS10FileTransfer,
+    "dell_sonic": DellSonicFileTransfer,
     "extreme_exos": ExtremeExosFileTransfer,
     "juniper_junos": JuniperFileTransfer,
     "linux": LinuxFileTransfer,
     "nokia_sros": NokiaSrosFileTransfer,
     "mikrotik_routeros": MikrotikRouterOsFileTransfer,
     "ubiquiti_edgerouter": UbiquitiEdgeRouterFileTransfer,
+    "zpe_nodegrid": ZpeNodegridFileTransfer,
 }
 
 # Also support keys that end in _ssh
@@ -434,6 +445,7 @@ CLASS_MAPPER["cisco_xe_telnet"] = CiscoIosTelnet
 CLASS_MAPPER["cisco_xr_telnet"] = CiscoXrTelnet
 CLASS_MAPPER["cisco_s200_telnet"] = CiscoS200Telnet
 CLASS_MAPPER["cisco_s300_telnet"] = CiscoS300Telnet
+CLASS_MAPPER["cisco_s500_telnet"] = CiscoS300Telnet
 CLASS_MAPPER["dell_dnos6_telnet"] = DellDNOS6Telnet
 CLASS_MAPPER["dell_powerconnect_telnet"] = DellPowerConnectTelnet
 CLASS_MAPPER["dlink_ds_telnet"] = DlinkDSTelnet
@@ -441,6 +453,7 @@ CLASS_MAPPER["extreme_telnet"] = ExtremeExosTelnet
 CLASS_MAPPER["extreme_exos_telnet"] = ExtremeExosTelnet
 CLASS_MAPPER["extreme_netiron_telnet"] = ExtremeNetironTelnet
 CLASS_MAPPER["fiberstore_fsosv2_telnet"] = FiberstoreFsosV2Telnet
+CLASS_MAPPER["furukawa_fitelnet_telnet"] = FurukawaFitelnetTelnet
 CLASS_MAPPER["generic_telnet"] = GenericTelnet
 CLASS_MAPPER["generic_termserver_telnet"] = TerminalServerTelnet
 CLASS_MAPPER["genexis_solt33_telnet"] = GenexisSOLT33Telnet
@@ -477,6 +490,7 @@ CLASS_MAPPER["zte_zxros_telnet"] = ZteZxrosTelnet
 
 # Add serial drivers
 CLASS_MAPPER["cisco_ios_serial"] = CiscoIosSerial
+CLASS_MAPPER["furukawa_fitelnet_serial"] = FurukawaFitelnetSerial
 
 # Add general terminal_server driver and autodetect
 CLASS_MAPPER["terminal_server"] = TerminalServerSSH
@@ -494,7 +508,7 @@ scp_platforms.sort()
 scp_platforms_str = "\n".join(scp_platforms)
 scp_platforms_str = "\n" + scp_platforms_str
 
-telnet_platforms = [x for x in platforms if "telnet" in x]
+telnet_platforms = [x for x in platforms if "_telnet" in x]
 telnet_platforms_str = "\n".join(telnet_platforms)
 telnet_platforms_str = "\n" + telnet_platforms_str
 
@@ -506,7 +520,7 @@ def ConnectHandler(*args: Any, **kwargs: Any) -> "BaseConnection":
         if device_type is None:
             msg_str = platforms_str
         else:
-            msg_str = telnet_platforms_str if "telnet" in device_type else platforms_str
+            msg_str = telnet_platforms_str if "_telnet" in device_type else platforms_str
         raise ValueError(
             "Unsupported 'device_type' currently supported platforms are: {}".format(msg_str)
         )

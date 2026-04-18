@@ -29,7 +29,7 @@
 - Check Point GAiA
 - Cisco AireOS (Wireless LAN Controllers)
 - Cisco ASA
-- Cisco S200
+- Cisco S200/S300/S500
 - CloudGenix ION
 - Dell OS9 (Force10)
 - Dell OS10
@@ -43,6 +43,7 @@
 - Extreme VDX (Brocade)
 - Extreme VSP (Avaya)
 - Fiberstore FSOS
+- Furukawa FITELnet
 - Hillstone StoneOS
 - HPE Comware7
 - HPE ProCurve
@@ -140,6 +141,7 @@
 - Versa Networks FlexVNF
 - Vertiv MPH Power Distribution Units
 - Watchguard Firebox
+- ZPE Systems Nodegrid
 - Zyxel NOS
 - 6WIND TurboRouter
 
@@ -193,6 +195,7 @@
 - cisco_nxos
 - cisco_s200
 - cisco_s300
+- cisco_s500
 - cisco_tp
 - cisco_viptela
 - cisco_wlc
@@ -240,6 +243,7 @@
 - flexvnf
 - fortinet
 - fujitsu_sir
+- furukawa_fitelnet
 - garderos_grs
 - generic
 - generic_termserver
@@ -306,6 +310,7 @@
 - vyos
 - watchguard_fireware
 - yamaha
+- zpe_nodegrid
 - zte_zxros
 - zyxel_os
 
@@ -328,6 +333,7 @@
 - cisco_nxos_telnet
 - cisco_s200_telnet
 - cisco_s300_telnet
+- cisco_s500_telnet
 - cisco_xr_telnet
 - dell_dnos6_telnet
 - dell_powerconnect_telnet
@@ -336,6 +342,7 @@
 - extreme_netiron_telnet
 - extreme_telnet
 - fiberstore_fsosv2_telnet
+- furukawa_fitelnet_telnet
 - generic_telnet
 - generic_termserver_telnet
 - genexis_solt33_telnet
@@ -386,4 +393,5 @@
 - nokia_sros
 - mikrotik_routeros
 - ubiquiti_edgerouter
+- zpe_nodegrid
 
