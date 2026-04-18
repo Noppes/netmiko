@@ -162,6 +162,7 @@ from netmiko.raisecom import RaisecomRoapSSH
 from netmiko.raisecom import RaisecomRoapTelnet
 from netmiko.raisecom import RaisecomRosSSH
 from netmiko.raisecom import RaisecomRosTelnet
+from netmiko.ribbon import RibbonNeptuneSSH
 from netmiko.ruckus import RuckusFastironSSH
 from netmiko.ruckus import RuckusFastironTelnet
 from netmiko.ruijie import RuijieOSSSH, RuijieOSTelnet
@@ -349,6 +350,7 @@ CLASS_MAPPER_BASE = {
     "rad_etx": RadETXSSH,
     "raisecom_roap": RaisecomRoapSSH,
     "raisecom_ros": RaisecomRosSSH,
+    "ribbon_neptune": RibbonNeptuneSSH,
     "ruckus_fastiron": RuckusFastironSSH,
     "ruijie_os": RuijieOSSSH,
     "iij_seilos": IIJSeilosSSH,
