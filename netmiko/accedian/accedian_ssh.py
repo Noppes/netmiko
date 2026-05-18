@@ -1,3 +1,4 @@
+import time
 from typing import Optional
 from netmiko.no_enable import NoEnable
 from netmiko.no_config import NoConfig
@@ -5,9 +6,15 @@ from netmiko.cisco_base_connection import CiscoSSHConnection
 
 
 class AccedianSSH(NoEnable, NoConfig, CiscoSSHConnection):
+    
     def session_preparation(self) -> None:
+        self.ansi_escape_codes = True
         self._test_channel_read(pattern=r"[:#]")
         self.set_base_prompt()
+        
+    def establish_connection(self, width: int = 511, height: int = 800) -> None:
+        """Establish SSH connection to the network device"""
+        super().establish_connection(width=width, height=height)
 
     def set_base_prompt(
         self,
