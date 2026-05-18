@@ -7,6 +7,22 @@ from netmiko import ConnectHandler
 from netmiko.session_log import SessionLog
 
 
+def filter_bare_prompts(content, base_prompt):
+    """Remove lines that are only a prompt or blank.
+
+    The count of such lines varies across runs (extra reads/writes during
+    session setup), so they must be excluded before MD5 comparison. Hard-codes
+    ">" and "#" as the only valid trailing prompt characters.
+    """
+    bare_prompts = {f"{base_prompt}>".encode(), f"{base_prompt}#".encode()}
+    filtered = []
+    for line in content.splitlines(keepends=True):
+        stripped = line.strip()
+        if stripped and stripped not in bare_prompts:
+            filtered.append(line)
+    return b"".join(filtered)
+
+
 def add_test_name_to_file_name(initial_fname, test_name):
     dir_name, f_name = initial_fname.split("/")
     new_file_name = f"{dir_name}/{test_name}-{f_name}"
@@ -45,18 +61,22 @@ def session_action(my_connect, command):
     return output
 
 
-def session_log_md5(session_file, compare_file):
+def session_log_md5(session_file, compare_file, base_prompt):
     """Compare the session_log MD5 to the compare_file MD5"""
-    compare_log_md5 = calc_md5(file_name=compare_file)
-    log_content = read_session_log(session_file)
+    with open(compare_file, "rb") as f:
+        compare_contents = filter_bare_prompts(f.read(), base_prompt)
+    compare_log_md5 = calc_md5(contents=compare_contents)
+    log_content = filter_bare_prompts(read_session_log(session_file), base_prompt)
     session_log_md5 = calc_md5(contents=log_content)
     assert session_log_md5 == compare_log_md5
 
 
-def session_log_md5_append(session_file, compare_file):
+def session_log_md5_append(session_file, compare_file, base_prompt):
     """Compare the session_log MD5 to the compare_file MD5"""
-    compare_log_md5 = calc_md5(file_name=compare_file)
-    log_content = read_session_log(session_file, append=True)
+    with open(compare_file, "rb") as f:
+        compare_contents = filter_bare_prompts(f.read(), base_prompt)
+    compare_log_md5 = calc_md5(contents=compare_contents)
+    log_content = filter_bare_prompts(read_session_log(session_file, append=True), base_prompt)
     session_log_md5 = calc_md5(contents=log_content)
     assert session_log_md5 == compare_log_md5
 
@@ -69,7 +89,7 @@ def test_session_log(net_connect, commands, expected_responses):
     compare_file = expected_responses["compare_log"]
     session_file = expected_responses["session_log"]
 
-    session_log_md5(session_file, compare_file)
+    session_log_md5(session_file, compare_file, net_connect.base_prompt)
 
 
 def test_session_log_write(net_connect_slog_wr, commands, expected_responses):
@@ -94,13 +114,14 @@ def test_session_log_write(net_connect_slog_wr, commands, expected_responses):
     # So just discard it.
     marker = b"% Invalid input detected at '^' marker."
     _, compare_contents = compare_contents.split(marker)
-    compare_log_md5 = calc_md5(contents=compare_contents.strip())
+    compare_contents = filter_bare_prompts(compare_contents.strip(), nc.base_prompt)
+    compare_log_md5 = calc_md5(contents=compare_contents)
 
     log_content = read_session_log(session_file)
-    marker = b"% Invalid input detected at '^' marker."
     _, log_content = log_content.split(marker)
+    log_content = filter_bare_prompts(log_content.strip(), nc.base_prompt)
 
-    session_log_md5 = calc_md5(contents=log_content.strip())
+    session_log_md5 = calc_md5(contents=log_content)
     assert session_log_md5 == compare_log_md5
 
 
@@ -127,7 +148,7 @@ def test_session_log_append(device_slog_test_name, commands, expected_responses)
     compare_file_base = expected_responses["compare_log_append"]
     dir_name, f_name = compare_file_base.split("/")
     compare_file = f"{dir_name}/{test_name}-{f_name}"
-    session_log_md5_append(session_file, compare_file)
+    session_log_md5_append(session_file, compare_file, conn.base_prompt)
 
 
 def test_session_log_secrets(device_slog_test_name):
@@ -240,9 +261,12 @@ def test_session_log_bytesio(device_slog_test_name, commands, expected_responses
 
     compare_file = expected_responses["compare_log"]
     compare_file = add_test_name_to_file_name(compare_file, test_name)
-    compare_log_md5 = calc_md5(file_name=compare_file)
 
-    log_content = s_log.getvalue()
+    with open(compare_file, "rb") as f:
+        compare_contents = filter_bare_prompts(f.read(), conn.base_prompt)
+    compare_log_md5 = calc_md5(contents=compare_contents)
+
+    log_content = filter_bare_prompts(s_log.getvalue(), conn.base_prompt)
     session_log_md5 = calc_md5(contents=log_content)
     assert session_log_md5 == compare_log_md5
 
@@ -278,7 +302,7 @@ def test_session_log_no_log(device_slog_test_name):
     # Plus one for read, one for write (send_command_timing)
     assert session_log.count("********") == 5
 
-    # Do disconnect after test (to make sure send_command() actually flushes session_log buffer)
+    # Assert before disconnect to verify write() flushes immediately (no explicit flush needed)
     conn.disconnect()
 
 
@@ -318,8 +342,31 @@ def test_session_log_no_log_cfg(device_slog_test_name, commands):
     assert session_log.count("********") == 2
     assert config_command2 in session_log
 
-    # Make sure send_config_set flushes the session_log (so disconnect after the asserts)
+    # Assert before disconnect to verify write() flushes immediately (no explicit flush needed)
     conn.disconnect()
+
+
+def test_session_log_partial_no_log_at_close():
+    """Verify a partial no_log match held in the buffer at close is written as
+    '********' rather than leaking a fragment of the secret."""
+    secret = "supersecret"
+    no_log = {"password": secret}
+    sink = io.BytesIO()
+
+    slog = SessionLog(buffered_io=sink, no_log=no_log)
+
+    # Write normal data followed by a partial secret (split at a write boundary).
+    # _flush_buffer holds "superse" back since it is a prefix of "supersecret".
+    slog.write("some output ")
+    slog.write("superse")  # partial prefix — held back, not yet written to sink
+
+    # close() must redact the held-back fragment rather than leaking it
+    slog.close()
+
+    result = sink.getvalue().decode("utf-8")
+    assert "some output " in result
+    assert secret not in result
+    assert "********" in result
 
 
 def test_session_log_custom_session_log(device_slog_test_name):
