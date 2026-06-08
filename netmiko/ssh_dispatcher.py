@@ -169,6 +169,7 @@ from netmiko.iij import IIJSeilosSSH, IIJSeilosTelnet
 from netmiko.silverpeak import SilverPeakVXOASSH
 from netmiko.sixwind import SixwindOSSSH
 from netmiko.smartoptics import SmartOpticsDWDMSSH
+from netmiko.sonic import SonicLinuxSSH
 from netmiko.sophos import SophosSfosSSH
 from netmiko.supermicro import SmciSwitchSmisSSH
 from netmiko.supermicro import SmciSwitchSmisTelnet
@@ -355,6 +356,7 @@ CLASS_MAPPER_BASE = {
     "silverpeak_vxoa": SilverPeakVXOASSH,
     "sixwind_os": SixwindOSSSH,
     "smartoptics_dwdm": SmartOpticsDWDMSSH,
+    "sonic_linux": SonicLinuxSSH,
     "sophos_sfos": SophosSfosSSH,
     "supermicro_smis": SmciSwitchSmisSSH,
     "telcosystems_binos": TelcoSystemsBinosSSH,
