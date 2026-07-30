@@ -43,6 +43,8 @@ from netmiko.ciena import (
     CienaWaveserverSSH,
     CienaSaosTelnet,
     CienaSaosFileTransfer,
+    CienaTl1SSH,
+    CienaTl1Telnet,
 )
 from netmiko.cisco import CiscoAsaSSH, CiscoAsaFileTransfer
 from netmiko.cisco import CiscoApicSSH, CiscoApSSH
@@ -240,6 +242,7 @@ CLASS_MAPPER_BASE = {
     "centec_os": CentecOSSSH,
     "ciena_saos": CienaSaosSSH,
     "ciena_saos10": CienaSaos10SSH,
+    "ciena_tl1": CienaTl1SSH,
     "ciena_waveserver": CienaWaveserverSSH,
     "cisco_ap": CiscoApSSH,
     "cisco_apic": CiscoApicSSH,
@@ -427,6 +430,7 @@ CLASS_MAPPER["calix_b6_telnet"] = CalixB6Telnet
 CLASS_MAPPER["calix_exa_telnet"] = CalixExaTelnet
 CLASS_MAPPER["centec_os_telnet"] = CentecOSTelnet
 CLASS_MAPPER["ciena_saos_telnet"] = CienaSaosTelnet
+CLASS_MAPPER["ciena_tl1_telnet"] = CienaTl1Telnet
 CLASS_MAPPER["cisco_ios_telnet"] = CiscoIosTelnet
 CLASS_MAPPER["cisco_nxos_telnet"] = CiscoNxosTelnet
 CLASS_MAPPER["cisco_ioswlc_telnet"] = CiscoIosTelnet
