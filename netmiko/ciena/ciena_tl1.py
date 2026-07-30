@@ -16,6 +16,7 @@ class CienaTl1Base(NoEnable, NoConfig, BaseConnection):
     Ciena TL1 support.
 
     Implements methods for interacting Ciena devices.
+
     """
 
     def __init__(self, *args: Any, **kwargs: Any):
@@ -43,7 +44,7 @@ class CienaTl1Base(NoEnable, NoConfig, BaseConnection):
     def _login_handler(self, delay_factor: float = 1.0) -> str:
         delay_factor = self.select_delay_factor(delay_factor)
         i = 0
-        time.sleep(delay_factor * 0.5)
+        time.sleep(delay_factor * 1.5)
         output = ""
         while i <= 12:
             output = self.read_channel()
@@ -51,7 +52,6 @@ class CienaTl1Base(NoEnable, NoConfig, BaseConnection):
                 self.write_channel(f'ACT-USER::"{self.username}":1::"{self.password}":')
                 break
             else:
-                self.write_channel(self.RETURN)
                 time.sleep(delay_factor * 1.5)
             i += 1
         time.sleep(delay_factor * 1.0)
@@ -67,15 +67,15 @@ class CienaTl1SSH(CienaTl1Base):
         return SSHClient_noauth()
 
     def special_login_handler(self, delay_factor: float = 1.0) -> None:
-        self._login_handler(delay_factor)
+        self._login_handler(delay_factor=delay_factor)
 
 
 class CienaTl1Telnet(CienaTl1Base):
-    def serial_login(
+    def telnet_login(
         self,
         pri_prompt_terminator: str = r"#\s*$",
         alt_prompt_terminator: str = r">\s*$",
-        username_pattern: str = r"(?:[Uu]ser:|sername|ogin)",
+        username_pattern: str = r"(?:user:|username|login|user name)",
         pwd_pattern: str = r"assword",
         delay_factor: float = 1.0,
         max_loops: int = 20,
