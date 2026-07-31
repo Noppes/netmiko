@@ -48,9 +48,6 @@ class FortinetSSH(NoConfig, NoEnable, CiscoSSHConnection):
         self._original_output_mode = self._get_output_mode()
         self._output_mode = self._original_output_mode
         self.disable_paging()
-    
-    def send_command(self, *args, auto_find_prompt: bool = False, **kwargs):
-        return super().send_command(*args, auto_find_prompt=auto_find_prompt, **kwargs)
 
     def set_base_prompt(
         self,
