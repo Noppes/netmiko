@@ -16,6 +16,7 @@ class WestermoOsBase(BaseConnection, NoEnable):
 
         Set the base prompt for interaction ('#').
         """
+        self.ansi_escape_codes = True
         self._test_channel_read()
         self.set_base_prompt()
         self.disable_paging(command="no interactive")
