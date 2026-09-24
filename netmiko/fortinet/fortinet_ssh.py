@@ -127,13 +127,17 @@ Alternatively you can try configuring 'configure system console -> set output st
         if self._vdoms:
             output += self._exit_config_global()
         return output
+    
+    def _prompt_handler(self, auto_find_prompt: bool) -> str:
+
+        return re.escape(self.base_prompt.strip()) + r"(?: \(.*?\))? [#$]"
 
     def _determine_os_version(self) -> str:
         check_command = "get system status | grep Version"
         output = self._send_command_str(check_command, expect_string=self.prompt_pattern)
-        if re.search(r"^Version\s*:\s+.*v[78]\..*$", output, flags=re.M):
+        if re.search(r"^Version: .* (v[78]\.).*$", output, flags=re.M):
             return "v7_or_later"
-        elif re.search(r"^Version\s*:\s+.*v[654]\..*$", output, flags=re.M):
+        elif re.search(r"^Version: .* (v[654]\.).*$", output, flags=re.M):
             return "v6_or_earlier"
         else:
             raise ValueError("Unexpected FortiOS Version encountered.")
