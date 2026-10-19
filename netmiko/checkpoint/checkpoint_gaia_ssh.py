@@ -28,6 +28,7 @@ class CheckPointGaiaSSH(NoConfig, BaseConnection):
         Set the base prompt for interaction ('>').
         """
         self._test_channel_read(pattern=self.prompt_pattern)
+        self._send_command_str("set clienv prompt %M>")
         self.set_base_prompt()
         self.disable_paging(command="set clienv rows 0")
 
