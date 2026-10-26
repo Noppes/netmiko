@@ -13,6 +13,7 @@ class CheckPointGaiaSSH(NoConfig, BaseConnection):
     """
 
     prompt_pattern = r"[>#]"
+    strip_prompt_pattern = r":\d+(?=[>#])"
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Kept running into issues with command_echo and duplicate echoes of commands.
@@ -28,7 +29,6 @@ class CheckPointGaiaSSH(NoConfig, BaseConnection):
         Set the base prompt for interaction ('>').
         """
         self._test_channel_read(pattern=self.prompt_pattern)
-        self._send_command_str("set clienv prompt %M>")
         self.set_base_prompt()
         self.disable_paging(command="set clienv rows 0")
 
@@ -125,3 +125,10 @@ class CheckPointGaiaSSH(NoConfig, BaseConnection):
             read_timeout=100.0,
         )
         return output
+
+    def find_prompt(
+        self, delay_factor: float = 1.0, pattern: Optional[str] = None
+    ) -> str:
+        prompt = super().find_prompt()
+        #string off the command number
+        return re.sub(self.strip_prompt_pattern, '', prompt)
