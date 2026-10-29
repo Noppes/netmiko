@@ -132,3 +132,6 @@ class CheckPointGaiaSSH(NoConfig, BaseConnection):
         prompt = super().find_prompt()
         #string off the command number
         return re.sub(self.strip_prompt_pattern, '', prompt)
+
+    def _prompt_handler(self, auto_find_prompt: bool) -> str:
+        return re.escape(self.base_prompt.strip()) + self.strip_prompt_pattern
