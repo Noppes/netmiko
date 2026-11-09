@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 import re
 from netmiko.cisco_base_connection import CiscoBaseConnection
 from netmiko.exceptions import NetmikoTimeoutException
@@ -115,7 +115,26 @@ class AdtranOSSSH(AdtranOSBase):
 
 
 class AdtranOSTelnet(AdtranOSBase):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        default_enter = kwargs.get("default_enter")
-        kwargs["default_enter"] = "\r\n" if default_enter is None else default_enter
-        super().__init__(*args, **kwargs)
+    pass
+
+
+class AdtranAOEBase(AdtranOSBase):
+
+    #No config save for Adtran Total Access devices
+    def save_config(
+        self, cmd: str = "", confirm: bool = False, confirm_response: str = ""
+    ) -> str:
+        """Not Implemented"""
+        raise NotImplementedError
+
+class AdtranAOESSH(AdtranAOEBase):
+    pass
+
+class AdtranAOETelnet(AdtranAOEBase):
+    pass
+
+    def save_config(
+        self, cmd: str = "", confirm: bool = False, confirm_response: str = ""
+    ) -> str:
+        """Not Implemented"""
+        raise NotImplementedError

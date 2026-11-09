@@ -7,7 +7,7 @@ from netmiko.exceptions import ConnectionException
 from netmiko.exceptions import NetmikoTimeoutException, NetmikoAuthenticationException
 from netmiko.a10 import A10SSH
 from netmiko.accedian import AccedianSSH
-from netmiko.adtran import AdtranOSSSH, AdtranOSTelnet
+from netmiko.adtran import AdtranOSSSH, AdtranOSTelnet, AdtranAOESSH, AdtranAOETelnet
 from netmiko.adva import AdvaAosFsp150F3SSH, AdvaAosFsp150F2SSH
 from netmiko.alaxala import AlaxalaAx36sSSH
 from netmiko.alcatel import AlcatelAosSSH
@@ -210,6 +210,7 @@ CLASS_MAPPER_BASE = {
     "a10": A10SSH,
     "accedian": AccedianSSH,
     "adtran_os": AdtranOSSSH,
+    "adtran_aoe": AdtranAOESSH,
     "adva_fsp150f2": AdvaAosFsp150F2SSH,
     "adva_fsp150f3": AdvaAosFsp150F3SSH,
     "alaxala_ax36s": AlaxalaAx36sSSH,
@@ -432,6 +433,7 @@ FILE_TRANSFER_MAP = new_mapper
 
 # Add telnet drivers
 CLASS_MAPPER["adtran_os_telnet"] = AdtranOSTelnet
+CLASS_MAPPER["adtran_aoe_telnet"] = AdtranAOETelnet
 CLASS_MAPPER["apresia_aeos_telnet"] = ApresiaAeosTelnet
 CLASS_MAPPER["arista_eos_telnet"] = AristaTelnet
 CLASS_MAPPER["aruba_procurve_telnet"] = HPProcurveTelnet
